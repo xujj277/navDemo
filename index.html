@@ -36,6 +36,10 @@
         o: 'opera.com',
         z: 'zhihu.com'
       }
+      var newHash = JSON.parse(localStorage.getItem('hash')) || null
+      if (newHash) {
+        hash = newHash
+      }
       return {
         keys: keys,
         hash: hash
@@ -56,14 +60,19 @@
     }
     function createSingleKey (i, div) {
       for (let j = 0; j < keys[i].length; j++ ) {
-        var kbd = tag('kbd')    
+        var kbd = tag('kbd') 
+        // kbd.className = keys[i][j]   
         var span = word(keys[i][j])
         var button = createButton(keys[i][j])
         var icon = createIcon(hash[keys[i][j]])
         div.appendChild(kbd)
         kbd.appendChild(span)
         kbd.appendChild(icon)
-        kbd.appendChild(button)
+        kbd.appendChild(button) 
+        // kbd.onclick = function (val) {
+        //   console.log(val.target.className)
+        //   window.open('http://' + hash[val.target.className], '_blank')
+        // }
       }
     }
     function tag (name) {
@@ -82,7 +91,6 @@
       button.onclick = function (val) {
         var targetButton = val.target
         var targetId = targetButton.id
-        console.log(val.target.previousSibling)
         var newIconImg = val.target.previousSibling
         var input = prompt('请输入一个网址')
         hash[targetId] = input
@@ -90,6 +98,7 @@
         newIconImg.onerror = function (val) {
           val.target.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'
         }
+        localStorage.setItem('hash', JSON.stringify(hash))
       }
       return button
     }
@@ -107,7 +116,6 @@
     }
     function listenToUser (hash) {
       document.onkeypress = function (val) {
-        console.log(val.key)
         window.open('http://' + hash[val.key], '_blank')
       }
     }
