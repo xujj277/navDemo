@@ -44,19 +44,70 @@
     var keys = data.keys
     var hash = data.hash
     createKeyboard(keys)
+    listenToUser(hash)
 
     function createKeyboard (keys) {
       for (let i = 0; i < keys.length; i++) {
-        var div = document.createElement('div')
+        var div = tag('div')
         keyboard.appendChild(div)
         createSingleKey(i, div)
       }
     }
     function createSingleKey (i, div) {
       for (let j = 0; j < keys[i].length; j++ ) {
-        var kbd = document.createElement('kbd')
-        kbd.textContent = keys[i][j]
+        var kbd = tag('kbd')    
+        var span = word(keys[i][j])
+        var button = createButton(keys[i][j])
+        var icon = createIcon(hash[keys[i][j]])
         div.appendChild(kbd)
+        kbd.appendChild(span)
+        kbd.appendChild(icon)
+        kbd.appendChild(button)
+      }
+    }
+    function tag (name) {
+      return document.createElement(name)
+    }
+    function word (content) {
+      var span = tag('span')
+      span.textContent = content
+      span.className = 'word'
+      return span
+    }
+    function createButton (id) {
+      var button = tag('button')
+      button.textContent = '编辑'
+      button.id = id
+      button.onclick = function (val) {
+        var targetButton = val.target
+        var targetId = targetButton.id
+        console.log(val.target.previousSibling)
+        var newIconImg = val.target.previousSibling
+        var input = prompt('请输入一个网址')
+        hash[targetId] = input
+        newIconImg.src = 'http://'+ input + '/favicon.ico'
+        newIconImg.onerror = function (val) {
+          val.target.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'
+        }
+      }
+      return button
+    }
+    function createIcon (url) {
+      var img = tag('img')
+      if (url) {
+        img.src = 'http://' + url + '/favicon.ico'
+      } else {
+        img.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'
+      }
+      img.onerror = function(img){
+				img.target.src = '//i.loli.net/2017/11/10/5a05afbc5e183.png'
+			}
+      return img
+    }
+    function listenToUser (hash) {
+      document.onkeypress = function (val) {
+        console.log(val.key)
+        
       }
     }
   </script>
